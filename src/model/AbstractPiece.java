@@ -16,7 +16,9 @@ public abstract class AbstractPiece {
 
     private final Point[][] myStates;
 
-    private Point[] myBoardCoordinates = null;
+    private Point[] myBoardCoordinates = new Point[4];
+
+    private boolean isPlaced = false;
 
     public AbstractPiece(final String theName, final Point[][] theStates) {
         myName = theName;
@@ -29,41 +31,39 @@ public abstract class AbstractPiece {
         Point[] result = new Point[myStates[myState].length];
         for (Point point : myStates[myState]) {
             point.translate(myOrigin.x, myOrigin.y);
-            result[count] = point;
+            result[count++] = point;
         }
         myBoardCoordinates = result;
     }
 
     public void moveLeft() {
         for (int i = 0; i < myBoardCoordinates.length; i++) {
-            myBoardCoordinates[i].translate(-1, 0);
+            myBoardCoordinates[i].translate(0, -1);
         }
-        myOrigin.translate(-1,0);
+        myOrigin.translate(0,-1);
     }
 
     public void moveRight() {
-        for (int i = 0; i < myBoardCoordinates.length; i++) {
-            myBoardCoordinates[i].translate(1, 0);
-        }
-        myOrigin.translate(1,0);
-    }
-
-    public void moveDown() {
         for (int i = 0; i < myBoardCoordinates.length; i++) {
             myBoardCoordinates[i].translate(0, 1);
         }
         myOrigin.translate(0,1);
     }
 
+    public void moveDown() {
+        for (int i = 0; i < myBoardCoordinates.length; i++) {
+            myBoardCoordinates[i].translate(1, 0);
+        }
+        myOrigin.translate(1,0);
+    }
+
     public void rotateCW() {
-        myState++;
-        if (myState == 4) myState = 0;
+        if (++myState == 4) myState = 0;
         updateCoordinates();
     }
 
     public void rotateCCW() {
-        myState--;
-        if(myState == -1) myState = 3;
+        if(--myState == -1) myState = 3;
         updateCoordinates();
     }
 
@@ -73,6 +73,16 @@ public abstract class AbstractPiece {
 
     public Point getOrigin() {
         return myOrigin;
+    }
+
+    public String getName() { return myName; }
+
+    public boolean isPlaced() {
+        return isPlaced;
+    }
+
+    public void setPlaced() {
+        isPlaced = true;
     }
 
 

@@ -3,11 +3,13 @@ package model;
 import java.awt.*;
 import java.util.Random;
 
+//TODO create helper method for all movement methods
+
 public class Board {
 
-    private static final int BOARD_X = 10;
+    private static final int BOARD_ROWS = 24;
 
-    private static final int BOARD_Y = 23;
+    private static final int BOARD_COLUMNS = 10;
 
     private static Random RANDOM = new Random();
 
@@ -16,7 +18,7 @@ public class Board {
     private AbstractPiece myCurrentPiece;
 
     public Board() {
-        myBoard = new boolean[BOARD_X][BOARD_Y];
+        myBoard = new boolean[BOARD_ROWS][BOARD_COLUMNS];
         myCurrentPiece = null;
     }
 
@@ -104,5 +106,7 @@ public class Board {
 
         }
     }
+
+    public boolean[][] getBoard() { return myBoard; }
 
 }
