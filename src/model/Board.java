@@ -3,6 +3,8 @@ package model;
 import java.awt.*;
 import java.util.Random;
 
+//TODO create helper method for all movement methods
+
 public class Board {
 
     private static final int BOARD_ROWS = 24;

@@ -18,6 +18,8 @@ public abstract class AbstractPiece {
 
     private Point[] myBoardCoordinates = new Point[4];
 
+    private boolean isPlaced = false;
+
     public AbstractPiece(final String theName, final Point[][] theStates) {
         myName = theName;
         myStates = theStates;
@@ -36,21 +38,21 @@ public abstract class AbstractPiece {
 
     public void moveLeft() {
         for (int i = 0; i < myBoardCoordinates.length; i++) {
-            myBoardCoordinates[i].translate(-1, 0);
+            myBoardCoordinates[i].translate(0, -1);
         }
         myOrigin.translate(0,-1);
     }
 
     public void moveRight() {
         for (int i = 0; i < myBoardCoordinates.length; i++) {
-            myBoardCoordinates[i].translate(1, 0);
+            myBoardCoordinates[i].translate(0, 1);
         }
         myOrigin.translate(0,1);
     }
 
     public void moveDown() {
         for (int i = 0; i < myBoardCoordinates.length; i++) {
-            myBoardCoordinates[i].translate(0, 1);
+            myBoardCoordinates[i].translate(1, 0);
         }
         myOrigin.translate(1,0);
     }
@@ -74,6 +76,14 @@ public abstract class AbstractPiece {
     }
 
     public String getName() { return myName; }
+
+    public boolean isPlaced() {
+        return isPlaced;
+    }
+
+    public void setPlaced() {
+        isPlaced = true;
+    }
 
 
 }
