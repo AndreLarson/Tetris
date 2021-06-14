@@ -7,9 +7,9 @@ import java.util.Random;
 
 public class Board {
 
-    private static final int BOARD_ROWS = 24;
+    public static final int BOARD_ROWS = 24;
 
-    private static final int BOARD_COLUMNS = 10;
+    public static final int BOARD_COLUMNS = 10;
 
     private static Random RANDOM = new Random();
 
