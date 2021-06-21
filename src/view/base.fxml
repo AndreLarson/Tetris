@@ -2,10 +2,11 @@
 
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id = "myPane" stylesheets="@base.css" maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity"
+<?import javafx.scene.canvas.Canvas?>
+<BorderPane fx:id = "myPane" fx:controller="controller.BoardController" stylesheets="@base.css" maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity"
             minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.202-ea"
             xmlns:fx="http://javafx.com/fxml/1">
     <center>
-        <fx:include source="board.fxml" alignment="CENTER"/>
+        <Canvas fx:id="myCanvas" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" />
     </center>
 </BorderPane>
