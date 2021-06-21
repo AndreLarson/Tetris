@@ -11,8 +11,13 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/base.fxml")));
-        Scene scene = new Scene(root, 600, 400);
+        FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/view/base.fxml"));
+        FXMLLoader boardLoader = new FXMLLoader(getClass().getResource("/view/board.fxml"));
+        Parent baseRoot = (Parent) baseLoader.load();
+        boardLoader.load();
+        Scene scene = new Scene(baseRoot, 600, 900);
+        BoardController boardController = boardLoader.getController();
+        boardController.setStage(primaryStage);
         primaryStage.setTitle("Tetris by Andre Larson");
         primaryStage.setScene(scene);
         primaryStage.show();

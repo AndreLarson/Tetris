@@ -77,13 +77,6 @@ public abstract class AbstractPiece {
 
     public String getName() { return myName; }
 
-    public boolean isPlaced() {
-        return isPlaced;
-    }
-
-    public void setPlaced() {
-        isPlaced = true;
-    }
 
 
 }
