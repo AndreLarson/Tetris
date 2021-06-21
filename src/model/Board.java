@@ -65,10 +65,46 @@ public class Board {
     }
 
     public void step() {
-        down();
-        //piece cant move down
-        //piece freezes
+        boolean canMoveDown = true;
+        for(Point point : myCurrentPiece.getBoardCoordinates()) {
+            if (myBoard[point.x + 1][point.y] == true) canMoveDown = false;
+            //problem will return false if the piece has blocks stacked on each other
+        }
+        if (canMoveDown) {
+            down();
+        } else {
+            checkRows();
+            spawnPiece();
+        }
+    }
+
+    public void start() {
         spawnPiece();
+    }
+
+    private void checkRows() {
+        int rowCount = 0;
+        int firstRow = 0;
+        for(Point point : myCurrentPiece.getBoardCoordinates()) {
+            if (!containsFalse(myBoard[point.x])) {
+                if (firstRow == 0) {
+                    firstRow = point.x;
+                }
+                for (int i = 0; i < BOARD_COLUMNS; i++) {
+                    myBoard[point.x][i] = false;
+                }
+                rowCount++;
+            }
+        }
+        //move all true values above firstRow down by rowCount
+    }
+
+    private boolean containsFalse(boolean[] theRow) {
+        boolean result = false;
+        for(boolean value : theRow) {
+            if (!value) result = true;
+        }
+        return result;
     }
 
     public void setMyCurrentPiece(final AbstractPiece theCurrentPiece) {
