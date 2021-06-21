@@ -61,7 +61,6 @@ public class BoardController {
             for (int j = 0; j < Board.BOARD_COLUMNS; j++) {
                 if (myBoard.getBoard()[i + 4][j]) {
                     drawSquare(j * RECT_WIDTH, i * RECT_HEIGHT, true);
-                    System.out.println("happened");
                 } else {
                     drawSquare(j * RECT_WIDTH, i * RECT_HEIGHT, false);
                 }
@@ -77,7 +76,6 @@ public class BoardController {
                     //start
                     //if started stop
                     myBoard.start();
-                    System.out.println("works");
                     break;
                 case UP:
                     //fast drop
@@ -86,19 +84,26 @@ public class BoardController {
                     //move down
                     myBoard.down();
                     updateGUI();
-                    System.out.println("works");
                     break;
                 case LEFT:
                     //move left
+                    myBoard.left();
+                    updateGUI();
                     break;
                 case RIGHT:
                     //move right
+                    myBoard.right();
+                    updateGUI();
                     break;
                 case Q:
                     //ccw
+                    myBoard.CCW();
+                    updateGUI();
                     break;
                 case E:
                     //cw
+                    myBoard.CW();
+                    updateGUI();
                     break;
             }
         });

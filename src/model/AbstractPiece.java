@@ -27,11 +27,11 @@ public abstract class AbstractPiece {
     }
 
     private void updateCoordinates() {
-        int count = 0;
         Point[] result = new Point[myStates[myState].length];
-        for (Point point : myStates[myState]) {
+        for (int i = 0; i < myStates[myState].length; i++) {
+            Point point = new Point(myStates[myState][i]);
             point.translate(myOrigin.x, myOrigin.y);
-            result[count++] = point;
+            result[i] = point;
         }
         myBoardCoordinates = result;
     }
@@ -58,13 +58,22 @@ public abstract class AbstractPiece {
     }
 
     public void rotateCW() {
-        if (++myState == 4) myState = 0;
+        myState++;
+        if (myState == 4) {
+            myState = 0;
+        }
         updateCoordinates();
     }
 
     public void rotateCCW() {
-        if(--myState == -1) myState = 3;
+        myState--;
+        if(myState == -1) {
+            myState = 3;
+        }
+        System.out.println(myStates[myState][0] + " " + myStates[myState][1] + " " + myStates[myState][2] + " " + myStates[myState][3]);
         updateCoordinates();
+        System.out.println(myStates[myState][0] + " " + myStates[myState][1] + " " + myStates[myState][2] + " " + myStates[myState][3] + "\n");
+
     }
 
     public Point[] getBoardCoordinates() {
