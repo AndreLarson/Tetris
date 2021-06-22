@@ -97,7 +97,7 @@ public class Board {
         switch (theDirection) {
             case "L":
                 for (Point point : myCurrentPiece.getBoardCoordinates()) {
-                    if (point.y - 1 < 0) {
+                    if (point.y - 1 < 0 || (myBoard[point.x][point.y - 1] == true && !myCurrentPiece.contains(new Point(point.x, point.y - 1)))) {
                         result = false;
                         break;
                     }
@@ -105,7 +105,7 @@ public class Board {
                 break;
             case "R":
                 for (Point point : myCurrentPiece.getBoardCoordinates()) {
-                    if (point.y + 1 >= BOARD_COLUMNS) {
+                    if (point.y + 1 >= BOARD_COLUMNS || (myBoard[point.x][point.y + 1] == true && !myCurrentPiece.contains(new Point(point.x, point.y + 1)))) {
                         result = false;
                         break;
                     }
@@ -113,7 +113,7 @@ public class Board {
                 break;
             case "D":
                 for (Point point : myCurrentPiece.getBoardCoordinates()) {
-                    if (point.x + 1 >= BOARD_ROWS) {
+                    if (point.x + 1 >= BOARD_ROWS || (myBoard[point.x + 1][point.y] == true && !myCurrentPiece.contains(new Point(point.x + 1, point.y)))) {
                         result = false;
                         break;
                     }
@@ -157,15 +157,8 @@ public class Board {
     }
 
     public void step() {
-        boolean canMoveDown = true;
-        for(Point point : myCurrentPiece.getBoardCoordinates()) {
-            if (myBoard[point.x + 1][point.y] == true) canMoveDown = false;
-            //problem will return false if the piece has blocks stacked on each other
-        }
-        if (canMoveDown) {
-            down();
-        } else {
-            checkRows();
+        down();
+        if (!canMove("D")) {
             spawnPiece();
         }
     }

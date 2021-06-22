@@ -8,21 +8,22 @@ public abstract class AbstractPiece {
 
     private static final int INITIAL_STATE = 0;
 
-    private final Point myOrigin = INITIAL_ORIGIN;
+    private Point myOrigin;
 
-    private int myState = INITIAL_STATE;
+    private int myState;
 
     private final String myName;
 
     private final Point[][] myStates;
 
-    private Point[] myBoardCoordinates = new Point[4];
-
-    private boolean isPlaced = false;
+    private Point[] myBoardCoordinates;
 
     public AbstractPiece(final String theName, final Point[][] theStates) {
         myName = theName;
         myStates = theStates;
+        myOrigin = new Point(INITIAL_ORIGIN);
+        myState = INITIAL_STATE;
+        myBoardCoordinates = new Point[4];
         updateCoordinates();
     }
 
@@ -85,12 +86,16 @@ public abstract class AbstractPiece {
         return myBoardCoordinates;
     }
 
-    public Point getOrigin() {
-        return myOrigin;
+    public boolean contains(Point thePoint) {
+        boolean result = false;
+        for (Point point : myBoardCoordinates) {
+            if (point.equals(thePoint)) {
+                result = true;
+            }
+        }
+        return result;
     }
 
     public String getName() { return myName; }
-
-
 
 }

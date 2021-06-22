@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -29,8 +30,17 @@ public class BoardController {
 
     private Stage myStage;
 
+    private AnimationTimer myTimer;
+
     public BoardController() {
         myBoard = new Board();
+        myTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                myBoard.step();
+                updateGUI();
+            }
+        };
     }
 
     @FXML
@@ -76,6 +86,7 @@ public class BoardController {
                     //start
                     //if started stop
                     myBoard.start();
+                    //myTimer.start();
                     break;
                 case UP:
                     //fast drop
