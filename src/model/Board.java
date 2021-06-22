@@ -22,6 +22,56 @@ public class Board {
         myCurrentPiece = null;
     }
 
+    //TODO delete when finished as this is only used for testing
+    public void start() {
+        spawnPiece();
+    }
+
+    public void step() {
+        if (canMove("D")) {
+            down();
+        } else {
+            checkRows();
+            spawnPiece();
+        }
+    }
+
+    private void checkRows() {
+        int rowCount = 0;
+        int topRow = 0;
+        for(Point point : myCurrentPiece.getBoardCoordinates()) {
+            if (!containsFalse(myBoard[point.x])) {
+                if (topRow == 0 || topRow > point.x) {
+                    topRow = point.x;
+                }
+                for (int i = 0; i < BOARD_COLUMNS; i++) {
+                    myBoard[point.x][i] = false;
+                }
+                rowCount++;
+            }
+        }
+        for (int i = topRow - 1; i > 3; i--) {
+            for (int j = 0; j < BOARD_COLUMNS; j++) {
+                if (myBoard[i][j]) {
+                    myBoard[i][j] = false;
+                    myBoard[i + rowCount][j] = true;
+                }
+            }
+        }
+        //move all true values above firstRow down by rowCount
+    }
+
+    private boolean containsFalse(boolean[] theRow) {
+        boolean result = false;
+        for(boolean value : theRow) {
+            if (!value) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
     public void updateBoard() {
         for(Point point : myCurrentPiece.getBoardCoordinates()) {
             myBoard[point.x][point.y] = true;
@@ -66,6 +116,37 @@ public class Board {
         updateBoard();
     }
 
+    private boolean canMove(final String theDirection) {
+        boolean result = true;
+        switch (theDirection) {
+            case "L":
+                for (Point point : myCurrentPiece.getBoardCoordinates()) {
+                    if (point.y - 1 < 0 || (myBoard[point.x][point.y - 1] && myCurrentPiece.contains(new Point(point.x, point.y - 1)))) {
+                        result = false;
+                        break;
+                    }
+                }
+                break;
+            case "R":
+                for (Point point : myCurrentPiece.getBoardCoordinates()) {
+                    if (point.y + 1 >= BOARD_COLUMNS || (myBoard[point.x][point.y + 1] && myCurrentPiece.contains(new Point(point.x, point.y + 1)))) {
+                        result = false;
+                        break;
+                    }
+                }
+                break;
+            case "D":
+                for (Point point : myCurrentPiece.getBoardCoordinates()) {
+                    if (point.x + 1 >= BOARD_ROWS || (myBoard[point.x + 1][point.y] && myCurrentPiece.contains(new Point(point.x + 1, point.y)))) {
+                        result = false;
+                        break;
+                    }
+                }
+                break;
+        }
+        return result;
+    }
+
     public void CW() {
         clearPiece();
         myCurrentPiece.rotateCW();
@@ -90,37 +171,6 @@ public class Board {
         while (outBelow()) {
             myCurrentPiece.moveUp();
         }
-    }
-
-    private boolean canMove(final String theDirection) {
-        boolean result = true;
-        switch (theDirection) {
-            case "L":
-                for (Point point : myCurrentPiece.getBoardCoordinates()) {
-                    if (point.y - 1 < 0 || (myBoard[point.x][point.y - 1] == true && !myCurrentPiece.contains(new Point(point.x, point.y - 1)))) {
-                        result = false;
-                        break;
-                    }
-                }
-                break;
-            case "R":
-                for (Point point : myCurrentPiece.getBoardCoordinates()) {
-                    if (point.y + 1 >= BOARD_COLUMNS || (myBoard[point.x][point.y + 1] == true && !myCurrentPiece.contains(new Point(point.x, point.y + 1)))) {
-                        result = false;
-                        break;
-                    }
-                }
-                break;
-            case "D":
-                for (Point point : myCurrentPiece.getBoardCoordinates()) {
-                    if (point.x + 1 >= BOARD_ROWS || (myBoard[point.x + 1][point.y] == true && !myCurrentPiece.contains(new Point(point.x + 1, point.y)))) {
-                        result = false;
-                        break;
-                    }
-                }
-                break;
-        }
-        return result;
     }
 
     private boolean outLeft() {
@@ -152,42 +202,6 @@ public class Board {
                 result = true;
                 break;
             }
-        }
-        return result;
-    }
-
-    public void step() {
-        down();
-        if (!canMove("D")) {
-            spawnPiece();
-        }
-    }
-
-    public void start() {
-        spawnPiece();
-    }
-
-    private void checkRows() {
-        int rowCount = 0;
-        int firstRow = 0;
-        for(Point point : myCurrentPiece.getBoardCoordinates()) {
-            if (!containsFalse(myBoard[point.x])) {
-                if (firstRow == 0) {
-                    firstRow = point.x;
-                }
-                for (int i = 0; i < BOARD_COLUMNS; i++) {
-                    myBoard[point.x][i] = false;
-                }
-                rowCount++;
-            }
-        }
-        //move all true values above firstRow down by rowCount
-    }
-
-    private boolean containsFalse(boolean[] theRow) {
-        boolean result = false;
-        for(boolean value : theRow) {
-            if (!value) result = true;
         }
         return result;
     }

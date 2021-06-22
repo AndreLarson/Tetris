@@ -11,34 +11,36 @@ import model.Board;
 
 public class BoardController {
 
-    private static int BOARD_WIDTH = 350;
+    private static final int BOARD_WIDTH = 350;
 
-    private static int BOARD_HEIGHT = 600;
+    private static final int BOARD_HEIGHT = 600;
 
-    private static int RECT_WIDTH = BOARD_WIDTH / (Board.BOARD_COLUMNS);
+    private static final int RECT_WIDTH = BOARD_WIDTH / (Board.BOARD_COLUMNS);
 
-    private static int RECT_HEIGHT = BOARD_HEIGHT / (Board.BOARD_ROWS - 4);
+    private static final int RECT_HEIGHT = BOARD_HEIGHT / (Board.BOARD_ROWS - 4);
 
-    private static int BORDER_WIDTH = 3;
+    private static final int BORDER_WIDTH = 3;
 
     @FXML
     private Canvas myCanvas;
 
     private GraphicsContext myGraphics;
 
-    private Board myBoard;
+    private final Board myBoard;
 
-    private Stage myStage;
-
-    private AnimationTimer myTimer;
+    private final AnimationTimer myTimer;
 
     public BoardController() {
         myBoard = new Board();
         myTimer = new AnimationTimer() {
+            private long lastUpdate = 0;
             @Override
             public void handle(long now) {
-                myBoard.step();
-                updateGUI();
+                if (now - lastUpdate >= 500_000_000) {
+                    myBoard.step();
+                    updateGUI();
+                    lastUpdate = now;
+                }
             }
         };
     }
@@ -69,24 +71,19 @@ public class BoardController {
     private void updateGUI() {
         for (int i = 0; i < Board.BOARD_ROWS - 4; i++) {
             for (int j = 0; j < Board.BOARD_COLUMNS; j++) {
-                if (myBoard.getBoard()[i + 4][j]) {
-                    drawSquare(j * RECT_WIDTH, i * RECT_HEIGHT, true);
-                } else {
-                    drawSquare(j * RECT_WIDTH, i * RECT_HEIGHT, false);
-                }
+                drawSquare(j * RECT_WIDTH, i * RECT_HEIGHT, myBoard.getBoard()[i + 4][j]);
             }
         }
     }
 
     public void setStage(Stage theStage) {
-        myStage = theStage;
-        myStage.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+        theStage.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             switch (e.getCode()) {
                 case SPACE:
                     //start
                     //if started stop
                     myBoard.start();
-                    //myTimer.start();
+                    myTimer.start();
                     break;
                 case UP:
                     //fast drop
