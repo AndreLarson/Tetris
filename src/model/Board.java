@@ -11,7 +11,7 @@ public class Board {
 
     public static final int BOARD_COLUMNS = 10;
 
-    private static Random RANDOM = new Random();
+    private static final Random RANDOM = new Random();
 
     private final boolean[][] myBoard;
 
@@ -35,33 +35,125 @@ public class Board {
     }
 
     public void left() {
-        clearPiece();
-        myCurrentPiece.moveLeft();
-        updateBoard();
+        if (canMove("L")) {
+            clearPiece();
+            myCurrentPiece.moveLeft();
+            updateBoard();
+        }
     }
 
     public void right() {
-        clearPiece();
-        myCurrentPiece.moveRight();
-        updateBoard();
+        if (canMove("R")) {
+            clearPiece();
+            myCurrentPiece.moveRight();
+            updateBoard();
+        }
     }
 
     public void down() {
+        if (canMove("D")) {
+            clearPiece();
+            myCurrentPiece.moveDown();
+            updateBoard();
+        }
+    }
+
+    public void fastDrop() {
         clearPiece();
-        myCurrentPiece.moveDown();
+        while (canMove("D")) {
+            myCurrentPiece.moveDown();
+        }
         updateBoard();
     }
 
     public void CW() {
         clearPiece();
         myCurrentPiece.rotateCW();
+        adjustPiece();
         updateBoard();
     }
 
     public void CCW() {
         clearPiece();
         myCurrentPiece.rotateCCW();
+        adjustPiece();
         updateBoard();
+    }
+
+    private void adjustPiece() {
+        while (outLeft()) {
+            myCurrentPiece.moveRight();
+        }
+        while (outRight()) {
+            myCurrentPiece.moveLeft();
+        }
+        while (outBelow()) {
+            myCurrentPiece.moveUp();
+        }
+    }
+
+    private boolean canMove(final String theDirection) {
+        boolean result = true;
+        switch (theDirection) {
+            case "L":
+                for (Point point : myCurrentPiece.getBoardCoordinates()) {
+                    if (point.y - 1 < 0) {
+                        result = false;
+                        break;
+                    }
+                }
+                break;
+            case "R":
+                for (Point point : myCurrentPiece.getBoardCoordinates()) {
+                    if (point.y + 1 >= BOARD_COLUMNS) {
+                        result = false;
+                        break;
+                    }
+                }
+                break;
+            case "D":
+                for (Point point : myCurrentPiece.getBoardCoordinates()) {
+                    if (point.x + 1 >= BOARD_ROWS) {
+                        result = false;
+                        break;
+                    }
+                }
+                break;
+        }
+        return result;
+    }
+
+    private boolean outLeft() {
+        boolean result = false;
+        for (Point point : myCurrentPiece.getBoardCoordinates()) {
+            if (point.y < 0) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    private boolean outRight() {
+        boolean result = false;
+        for (Point point : myCurrentPiece.getBoardCoordinates()) {
+            if (point.y >= BOARD_COLUMNS) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    private boolean outBelow() {
+        boolean result = false;
+        for (Point point : myCurrentPiece.getBoardCoordinates()) {
+            if (point.x >= BOARD_ROWS) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
     public void step() {

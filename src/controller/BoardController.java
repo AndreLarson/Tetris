@@ -79,6 +79,8 @@ public class BoardController {
                     break;
                 case UP:
                     //fast drop
+                    myBoard.fastDrop();
+                    updateGUI();
                     break;
                 case DOWN:
                     //move down

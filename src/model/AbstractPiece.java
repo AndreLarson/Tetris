@@ -57,6 +57,13 @@ public abstract class AbstractPiece {
         myOrigin.translate(1,0);
     }
 
+    public void moveUp() {
+        for (int i = 0; i < myBoardCoordinates.length; i++) {
+            myBoardCoordinates[i].translate(-1, 0);
+        }
+        myOrigin.translate(-1,0);
+    }
+
     public void rotateCW() {
         myState++;
         if (myState == 4) {
@@ -70,9 +77,7 @@ public abstract class AbstractPiece {
         if(myState == -1) {
             myState = 3;
         }
-        System.out.println(myStates[myState][0] + " " + myStates[myState][1] + " " + myStates[myState][2] + " " + myStates[myState][3]);
         updateCoordinates();
-        System.out.println(myStates[myState][0] + " " + myStates[myState][1] + " " + myStates[myState][2] + " " + myStates[myState][3] + "\n");
 
     }
 
