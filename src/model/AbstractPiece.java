@@ -8,30 +8,31 @@ public abstract class AbstractPiece {
 
     private static final int INITIAL_STATE = 0;
 
-    private final Point myOrigin = INITIAL_ORIGIN;
+    private Point myOrigin;
 
-    private int myState = INITIAL_STATE;
+    private int myState;
 
     private final String myName;
 
     private final Point[][] myStates;
 
-    private Point[] myBoardCoordinates = new Point[4];
-
-    private boolean isPlaced = false;
+    private Point[] myBoardCoordinates;
 
     public AbstractPiece(final String theName, final Point[][] theStates) {
         myName = theName;
         myStates = theStates;
+        myOrigin = new Point(INITIAL_ORIGIN);
+        myState = INITIAL_STATE;
+        myBoardCoordinates = new Point[4];
         updateCoordinates();
     }
 
     private void updateCoordinates() {
-        int count = 0;
         Point[] result = new Point[myStates[myState].length];
-        for (Point point : myStates[myState]) {
+        for (int i = 0; i < myStates[myState].length; i++) {
+            Point point = new Point(myStates[myState][i]);
             point.translate(myOrigin.x, myOrigin.y);
-            result[count++] = point;
+            result[i] = point;
         }
         myBoardCoordinates = result;
     }
@@ -57,26 +58,44 @@ public abstract class AbstractPiece {
         myOrigin.translate(1,0);
     }
 
+    public void moveUp() {
+        for (int i = 0; i < myBoardCoordinates.length; i++) {
+            myBoardCoordinates[i].translate(-1, 0);
+        }
+        myOrigin.translate(-1,0);
+    }
+
     public void rotateCW() {
-        if (++myState == 4) myState = 0;
+        myState++;
+        if (myState == 4) {
+            myState = 0;
+        }
         updateCoordinates();
     }
 
     public void rotateCCW() {
-        if(--myState == -1) myState = 3;
+        myState--;
+        if(myState == -1) {
+            myState = 3;
+        }
         updateCoordinates();
+
     }
 
     public Point[] getBoardCoordinates() {
         return myBoardCoordinates;
     }
 
-    public Point getOrigin() {
-        return myOrigin;
+    public boolean contains(Point thePoint) {
+        boolean result = false;
+        for (Point point : myBoardCoordinates) {
+            if (point.equals(thePoint)) {
+                result = true;
+            }
+        }
+        return result;
     }
 
     public String getName() { return myName; }
-
-
 
 }
