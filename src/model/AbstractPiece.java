@@ -99,4 +99,9 @@ public abstract class AbstractPiece {
 
     public String getName() { return myName; }
 
+    public Point getOrigin() {
+        return myOrigin;
+
+    }
+
 }

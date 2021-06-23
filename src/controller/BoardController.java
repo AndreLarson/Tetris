@@ -30,16 +30,24 @@ public class BoardController {
 
     private final AnimationTimer myTimer;
 
+    private boolean isStarted;
+
     public BoardController() {
+        isStarted = false;
         myBoard = new Board();
         myTimer = new AnimationTimer() {
             private long lastUpdate = 0;
             @Override
             public void handle(long now) {
-                if (now - lastUpdate >= 500_000_000) {
-                    myBoard.step();
-                    updateGUI();
-                    lastUpdate = now;
+                if (now - lastUpdate >= 100_000_000) {
+                    if (lastUpdate == 0) myBoard.start();
+                    if(myBoard.step()) {
+                        updateGUI();
+                        lastUpdate = now;
+                    } else {
+                        myTimer.stop();
+                        System.out.println("game over");
+                    }
                 }
             }
         };
@@ -60,10 +68,10 @@ public class BoardController {
     private void drawSquare(int j, int i, boolean theValue) {
         myGraphics.setFill(Color.BLACK);
         myGraphics.fillRect(j, i, RECT_WIDTH, RECT_HEIGHT);
-        if (!theValue) {
-            myGraphics.setFill(Color.WHITE);
-        } else {
+        if (theValue) {
             myGraphics.setFill(Color.ORANGE);
+        } else {
+            myGraphics.setFill(Color.WHITE);
         }
         myGraphics.fillRect(j + BORDER_WIDTH, i + BORDER_WIDTH, RECT_WIDTH - (BORDER_WIDTH * 2), RECT_HEIGHT - (BORDER_WIDTH * 2));
     }
@@ -80,38 +88,35 @@ public class BoardController {
         theStage.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             switch (e.getCode()) {
                 case SPACE:
-                    //start
-                    //if started stop
-                    myBoard.start();
-                    myTimer.start();
+                    if (isStarted) {
+                        myTimer.stop();
+                        isStarted = false;
+                    } else {
+                        myTimer.start();
+                        isStarted = true;
+                    }
                     break;
                 case UP:
-                    //fast drop
                     myBoard.fastDrop();
                     updateGUI();
                     break;
                 case DOWN:
-                    //move down
                     myBoard.down();
                     updateGUI();
                     break;
                 case LEFT:
-                    //move left
                     myBoard.left();
                     updateGUI();
                     break;
                 case RIGHT:
-                    //move right
                     myBoard.right();
                     updateGUI();
                     break;
                 case Q:
-                    //ccw
                     myBoard.CCW();
                     updateGUI();
                     break;
                 case E:
-                    //cw
                     myBoard.CW();
                     updateGUI();
                     break;
