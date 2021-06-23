@@ -8,7 +8,7 @@ public abstract class AbstractPiece {
 
     private static final int INITIAL_STATE = 0;
 
-    private Point myOrigin;
+    private final Point myOrigin;
 
     private int myState;
 
@@ -38,29 +38,29 @@ public abstract class AbstractPiece {
     }
 
     public void moveLeft() {
-        for (int i = 0; i < myBoardCoordinates.length; i++) {
-            myBoardCoordinates[i].translate(0, -1);
+        for (Point myBoardCoordinate : myBoardCoordinates) {
+            myBoardCoordinate.translate(0, -1);
         }
         myOrigin.translate(0,-1);
     }
 
     public void moveRight() {
-        for (int i = 0; i < myBoardCoordinates.length; i++) {
-            myBoardCoordinates[i].translate(0, 1);
+        for (Point myBoardCoordinate : myBoardCoordinates) {
+            myBoardCoordinate.translate(0, 1);
         }
         myOrigin.translate(0,1);
     }
 
     public void moveDown() {
-        for (int i = 0; i < myBoardCoordinates.length; i++) {
-            myBoardCoordinates[i].translate(1, 0);
+        for (Point myBoardCoordinate : myBoardCoordinates) {
+            myBoardCoordinate.translate(1, 0);
         }
         myOrigin.translate(1,0);
     }
 
     public void moveUp() {
-        for (int i = 0; i < myBoardCoordinates.length; i++) {
-            myBoardCoordinates[i].translate(-1, 0);
+        for (Point myBoardCoordinate : myBoardCoordinates) {
+            myBoardCoordinate.translate(-1, 0);
         }
         myOrigin.translate(-1,0);
     }
@@ -91,11 +91,17 @@ public abstract class AbstractPiece {
         for (Point point : myBoardCoordinates) {
             if (point.equals(thePoint)) {
                 result = true;
+                break;
             }
         }
-        return result;
+        return !result;
     }
 
     public String getName() { return myName; }
+
+    public Point getOrigin() {
+        return myOrigin;
+
+    }
 
 }
