@@ -17,4 +17,8 @@ public class L_Piece extends AbstractPiece {
         super(MY_NAME, MY_STATES);
     }
 
+    public L_Piece(AbstractPiece thePiece) {
+        super(thePiece);
+    }
+
 }

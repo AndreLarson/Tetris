@@ -39,7 +39,7 @@ public class BoardController {
             private long lastUpdate = 0;
             @Override
             public void handle(long now) {
-                if (now - lastUpdate >= 100_000_000) {
+                if (now - lastUpdate >= 1_000_000_000) {
                     if (lastUpdate == 0) myBoard.start();
                     if(myBoard.step()) {
                         updateGUI();

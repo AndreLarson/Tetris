@@ -12,19 +12,27 @@ public abstract class AbstractPiece {
 
     private int myState;
 
-    private final String myName;
-
     private final Point[][] myStates;
 
     private Point[] myBoardCoordinates;
 
-    public AbstractPiece(final String theName, final Point[][] theStates) {
+    private String myName;
+
+    public AbstractPiece(final String theName,  final Point[][] theStates) {
         myName = theName;
         myStates = theStates;
         myOrigin = new Point(INITIAL_ORIGIN);
         myState = INITIAL_STATE;
         myBoardCoordinates = new Point[4];
         updateCoordinates();
+    }
+
+    public  AbstractPiece(final AbstractPiece thePiece) {
+        myName = thePiece.myName;
+        myStates = thePiece.myStates;
+        myOrigin = thePiece.myOrigin;
+        myState = thePiece.myState;
+        myBoardCoordinates = thePiece.myBoardCoordinates;
     }
 
     private void updateCoordinates() {
@@ -73,13 +81,26 @@ public abstract class AbstractPiece {
         updateCoordinates();
     }
 
+    public Point[] getNextCW() {
+        rotateCW();
+        Point[] result = getBoardCoordinates();
+        rotateCCW();
+        return result;
+    }
+
     public void rotateCCW() {
         myState--;
         if(myState == -1) {
             myState = 3;
         }
         updateCoordinates();
+    }
 
+    public Point[] getNextCCW() {
+        rotateCCW();
+        Point[] result = getBoardCoordinates();
+        rotateCW();
+        return result;
     }
 
     public Point[] getBoardCoordinates() {
@@ -97,11 +118,12 @@ public abstract class AbstractPiece {
         return !result;
     }
 
-    public String getName() { return myName; }
-
     public Point getOrigin() {
         return myOrigin;
+    }
 
+    public String getName() {
+        return myName;
     }
 
 }
