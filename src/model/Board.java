@@ -388,6 +388,18 @@ public class Board {
     }
 
     /**
+     * Sets all values in the board to false.
+     *
+     */
+    public void reset() {
+        for (int i = 0; i < BOARD_ROWS; i++) {
+            for (int j = 0; j < BOARD_COLUMNS; j++) {
+                myBoard[i][j] = false;
+            }
+        }
+    }
+
+    /**
      * Returns myBoard.
      *
      * @return myBoard

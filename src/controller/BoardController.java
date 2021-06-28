@@ -32,8 +32,11 @@ public class BoardController {
 
     private boolean isStarted;
 
+    private boolean isOver;
+
     public BoardController() {
         isStarted = false;
+        isOver = false;
         myBoard = new Board();
         myTimer = new AnimationTimer() {
             private long lastUpdate = 0;
@@ -46,6 +49,8 @@ public class BoardController {
                         lastUpdate = now;
                     } else {
                         myTimer.stop();
+                        isStarted = false;
+                        isOver = true;
                         System.out.println("game over");
                     }
                 }
@@ -88,7 +93,12 @@ public class BoardController {
         theStage.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             switch (e.getCode()) {
                 case ENTER:
-                    if (isStarted) {
+                    if (isOver) {
+                        myBoard.reset();
+                        updateGUI();
+                        myTimer.start();
+                        isStarted = true;
+                    } else if (isStarted) {
                         myTimer.stop();
                         isStarted = false;
                     } else {
@@ -97,28 +107,40 @@ public class BoardController {
                     }
                     break;
                 case UP:
-                    myBoard.fastDrop();
-                    updateGUI();
+                    if (isStarted) {
+                        myBoard.fastDrop();
+                        updateGUI();
+                    }
                     break;
                 case DOWN:
-                    myBoard.down();
-                    updateGUI();
+                    if (isStarted) {
+                        myBoard.down();
+                        updateGUI();
+                    }
                     break;
                 case LEFT:
-                    myBoard.left();
-                    updateGUI();
+                    if (isStarted) {
+                        myBoard.left();
+                        updateGUI();
+                    }
                     break;
                 case RIGHT:
-                    myBoard.right();
-                    updateGUI();
+                    if (isStarted) {
+                        myBoard.right();
+                        updateGUI();
+                    }
                     break;
                 case A:
-                    myBoard.CCW();
-                    updateGUI();
+                    if (isStarted) {
+                        myBoard.CCW();
+                        updateGUI();
+                    }
                     break;
                 case D:
-                    myBoard.CW();
-                    updateGUI();
+                    if (isStarted) {
+                        myBoard.CW();
+                        updateGUI();
+                    }
                     break;
             }
         });
