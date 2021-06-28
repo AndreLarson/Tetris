@@ -13,8 +13,10 @@ public class O_Piece extends AbstractPiece {
             {new Point(-1, 1), new Point(-2, 1), new Point(-1, 2), new Point(-2, 2)}
     };
 
-    public O_Piece() {
-        super(MY_NAME, MY_STATES);
+    public O_Piece() { super(MY_NAME, MY_STATES); }
+
+    public O_Piece(AbstractPiece thePiece) {
+        super(thePiece);
     }
 
 }

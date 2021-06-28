@@ -1,22 +1,34 @@
 package model;
 
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
-//TODO create helper method for all movement methods
-
+/**
+ * This class contains all the logic for the tetris board.
+ *
+ */
 public class Board {
 
+    /** The number of rows of the tetris board */
     public static final int BOARD_ROWS = 24;
 
+    /** The number of columns of the tetris board */
     public static final int BOARD_COLUMNS = 10;
 
+    /** Random object */
     private static final Random RANDOM = new Random();
 
+    /** 2D boolean array that represents the tetris board */
     private final boolean[][] myBoard;
 
+    /** The current piece in play */
     private AbstractPiece myCurrentPiece;
 
+    /**
+     * Default constructor for the tetris board.
+     *
+     */
     public Board() {
         myBoard = new boolean[BOARD_ROWS][BOARD_COLUMNS];
         myCurrentPiece = null;
@@ -69,14 +81,14 @@ public class Board {
         int topRow = 0;
         for(Point point : myCurrentPiece.getBoardCoordinates()) {
             if (!containsBoolean(myBoard[point.x], false)) {
-                if (topRow == 0 || topRow > point.x) topRow = point.x;
+                if (topRow == 0 || topRow > point.x)
+                    topRow = point.x;
                 for (int i = 0; i < BOARD_COLUMNS; i++) {
                     myBoard[point.x][i] = false;
                 }
                 rowCount++;
             }
         }
-        //move all true values above topRow down by rowCount
         for (int i = topRow - 1; i > 3; i--) {
             for (int j = 0; j < BOARD_COLUMNS; j++) {
                 if (myBoard[i][j]) {
@@ -162,9 +174,7 @@ public class Board {
      */
     public void fastDrop() {
         updatePiece(false);
-        while (canMove('D')) {
-            myCurrentPiece.moveDown();
-        }
+        while (down())
         updatePiece(true);
     }
 
@@ -209,11 +219,8 @@ public class Board {
      * Rotates the piece clockwise.
      *
      */
-    public void CW() {
-        updatePiece(false);
-        myCurrentPiece.rotateCW();
-        adjustPiece();
-        updatePiece(true);
+    public void CW(){
+        rotate("CW");
     }
 
     /**
@@ -221,49 +228,78 @@ public class Board {
      *
      */
     public void CCW() {
+        rotate("CCW");
+    }
+
+    /**
+     * Handles both clockwise rotation and counter-clockwise rotation. Only rotates if the position after rotation is
+     * a valid position on the tetris board.
+     *
+     * @param theDirection "CW" for clockwise, "CCW" for counter-clockwise.
+     */
+    private void rotate(final String theDirection) {
         updatePiece(false);
-        myCurrentPiece.rotateCCW();
-        adjustPiece();
+        try {
+            AbstractPiece temp = myCurrentPiece.getClass().getConstructor(AbstractPiece.class).newInstance(myCurrentPiece);
+            myCurrentPiece.getClass().cast(temp);
+            switch (theDirection) {
+                case "CW":
+                    temp.rotateCW();
+                    if (outOfBounds(temp) == 0 && overlapping(temp)) {
+                        myCurrentPiece.rotateCW();
+                    } else {
+                        adjustPiece(temp);
+                        if (overlapping(temp)) {
+                            myCurrentPiece.rotateCW();
+                            adjustPiece(myCurrentPiece);
+                        }
+                    }
+                    break;
+                case "CCW":
+                    temp.rotateCCW();
+                    if (outOfBounds(temp) == 0 && overlapping(temp)) {
+                        myCurrentPiece.rotateCCW();
+                    } else {
+                        adjustPiece(temp);
+                        if (overlapping(temp)) {
+                            myCurrentPiece.rotateCCW();
+                            adjustPiece(myCurrentPiece);
+                        }
+                    }
+                    break;
+            }
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
         updatePiece(true);
     }
 
-    private AbstractPiece isValid(final AbstractPiece thePiece) {
-        //if piece is valid return piece
-        //otherwise use recursive backtracking to return a valid location by moving left right or down
-        //count number of moves and return the one with the least amount of moves
-        return null;
-    }
-
     /**
-     * Adjusts the piece to stay within bounds when a rotation moves it out of bounds.
+     * Checks to see if a piece is overlapping any other pieces on the tetris board.
      *
+     * @param thePiece the piece being checked
+     * @return true if not overlapping and false otherwise.
      */
-    private void adjustPiece() {
-        char theDirection = out();
-        while (theDirection != 0) {
-            switch (theDirection) {
-                case 'L':
-                    myCurrentPiece.moveRight();
-                    break;
-                case 'R':
-                    myCurrentPiece.moveLeft();
-                    break;
-                case 'D':
-                    myCurrentPiece.moveUp();
-                    break;
+    private boolean overlapping(final AbstractPiece thePiece) {
+        boolean result = false;
+        for (Point point : thePiece.getBoardCoordinates()) {
+            if (myBoard[point.x][point.y]) {
+                result = true;
+                break;
             }
-            theDirection = out();
         }
+        return !result;
     }
 
     /**
-     * Checks to see if the piece is out of bounds and returns the direction via char.
+     * Checks to see if a piece is out of the play area.
      *
-     * @return 'L' if out on left bounds, 'R' if out on right bounds, 'D' if out on bottom bounds.
+     * @param thePiece the piece being checked
+     * @return 'L' if out on left side, 'R' if out on right side, and 'D' if out on the bottom.
      */
-    private char out() {
+    private char outOfBounds(final AbstractPiece thePiece) {
         char result = 0;
-        for (Point point : myCurrentPiece.getBoardCoordinates()) {
+        for (Point point : thePiece.getBoardCoordinates()) {
             if (point.y < 0) {
                 result = 'L';
                 break;
@@ -276,6 +312,29 @@ public class Board {
             }
         }
         return result;
+    }
+
+    /**
+     * Moves a piece in bounds if a rotation moves it out of bounds.
+     *
+     * @param thePiece the piece being moved
+     */
+    private void adjustPiece(final AbstractPiece thePiece) {
+        char theDirection = outOfBounds(thePiece);
+        while (theDirection != 0) {
+            switch (theDirection) {
+                case 'L':
+                    thePiece.moveRight();
+                    break;
+                case 'R':
+                    thePiece.moveLeft();
+                    break;
+                case 'D':
+                    thePiece.moveUp();
+                    break;
+            }
+            theDirection = outOfBounds(thePiece);
+        }
     }
 
     /**
@@ -326,6 +385,18 @@ public class Board {
     public void setMyCurrentPiece(final AbstractPiece theCurrentPiece) {
         myCurrentPiece = theCurrentPiece;
         updatePiece(true);
+    }
+
+    /**
+     * Sets all values in the board to false.
+     *
+     */
+    public void reset() {
+        for (int i = 0; i < BOARD_ROWS; i++) {
+            for (int j = 0; j < BOARD_COLUMNS; j++) {
+                myBoard[i][j] = false;
+            }
+        }
     }
 
     /**
