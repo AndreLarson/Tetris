@@ -4,20 +4,31 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
-//TODO create helper method for all movement methods
-
+/**
+ * This class contains all the logic for the tetris board.
+ *
+ */
 public class Board {
 
+    /** The number of rows of the tetris board */
     public static final int BOARD_ROWS = 24;
 
+    /** The number of columns of the tetris board */
     public static final int BOARD_COLUMNS = 10;
 
+    /** Random object */
     private static final Random RANDOM = new Random();
 
+    /** 2D boolean array that represents the tetris board */
     private final boolean[][] myBoard;
 
+    /** The current piece in play */
     private AbstractPiece myCurrentPiece;
 
+    /**
+     * Default constructor for the tetris board.
+     *
+     */
     public Board() {
         myBoard = new boolean[BOARD_ROWS][BOARD_COLUMNS];
         myCurrentPiece = null;
@@ -163,9 +174,7 @@ public class Board {
      */
     public void fastDrop() {
         updatePiece(false);
-        while (canMove('D')) {
-            myCurrentPiece.moveDown();
-        }
+        while (down())
         updatePiece(true);
     }
 
@@ -222,6 +231,12 @@ public class Board {
         rotate("CCW");
     }
 
+    /**
+     * Handles both clockwise rotation and counter-clockwise rotation. Only rotates if the position after rotation is
+     * a valid position on the tetris board.
+     *
+     * @param theDirection "CW" for clockwise, "CCW" for counter-clockwise.
+     */
     private void rotate(final String theDirection) {
         updatePiece(false);
         try {
@@ -259,6 +274,12 @@ public class Board {
         updatePiece(true);
     }
 
+    /**
+     * Checks to see if a piece is overlapping any other pieces on the tetris board.
+     *
+     * @param thePiece the piece being checked
+     * @return true if not overlapping and false otherwise.
+     */
     private boolean overlapping(final AbstractPiece thePiece) {
         boolean result = false;
         for (Point point : thePiece.getBoardCoordinates()) {
@@ -270,6 +291,12 @@ public class Board {
         return !result;
     }
 
+    /**
+     * Checks to see if a piece is out of the play area.
+     *
+     * @param thePiece the piece being checked
+     * @return 'L' if out on left side, 'R' if out on right side, and 'D' if out on the bottom.
+     */
     private char outOfBounds(final AbstractPiece thePiece) {
         char result = 0;
         for (Point point : thePiece.getBoardCoordinates()) {
@@ -287,6 +314,11 @@ public class Board {
         return result;
     }
 
+    /**
+     * Moves a piece in bounds if a rotation moves it out of bounds.
+     *
+     * @param thePiece the piece being moved
+     */
     private void adjustPiece(final AbstractPiece thePiece) {
         char theDirection = outOfBounds(thePiece);
         while (theDirection != 0) {

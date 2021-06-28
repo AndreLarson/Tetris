@@ -39,7 +39,7 @@ public class BoardController {
             private long lastUpdate = 0;
             @Override
             public void handle(long now) {
-                if (now - lastUpdate >= 1_000_000_000) {
+                if (now - lastUpdate >= 500_000_000) {
                     if (lastUpdate == 0) myBoard.start();
                     if(myBoard.step()) {
                         updateGUI();
@@ -87,7 +87,7 @@ public class BoardController {
     public void setStage(Stage theStage) {
         theStage.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             switch (e.getCode()) {
-                case SPACE:
+                case ENTER:
                     if (isStarted) {
                         myTimer.stop();
                         isStarted = false;
@@ -112,11 +112,11 @@ public class BoardController {
                     myBoard.right();
                     updateGUI();
                     break;
-                case Q:
+                case A:
                     myBoard.CCW();
                     updateGUI();
                     break;
-                case E:
+                case D:
                     myBoard.CW();
                     updateGUI();
                     break;

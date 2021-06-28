@@ -14,7 +14,7 @@ public class Main extends Application {
         Parent baseRoot = baseLoader.load();
         BoardController boardController = baseLoader.getController();
         boardController.setStage(primaryStage);
-        Scene scene = new Scene(baseRoot, 600, 900);
+        Scene scene = new Scene(baseRoot, 900, 900);
         primaryStage.setTitle("Tetris Ultimate 3000 Version 1.0 Deluxe Edition");
         primaryStage.setScene(scene);
         primaryStage.show();
